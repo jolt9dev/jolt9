@@ -1,0 +1,29 @@
+# file for giving 
+name: myapp
+
+# shared tasks
+tasks:
+  before_deploy:
+    - run: |
+        echo "before deploy"
+      shell:
+
+contexts:
+  ha:
+    compose: ./ha.compose.yaml
+
+    # restrict the envs to use
+    env: ["VAR", "VAR2"]
+
+    # only use the secrets
+    secrets:
+      - name: PG_PASSWORD  # if key is not provided, it will be the same as name
+        gen: true # generate if not exists
+        # vault is not provided, it will assume the default vault
+
+    traefik:
+      exclude: true # probably already handled by the compose file
+
+    zone: |
+      mayap 
+      

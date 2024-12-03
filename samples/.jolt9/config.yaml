@@ -1,0 +1,30 @@
+# .jolt9 in a directory will be treated as a cache and configuration directory.
+vaults:
+  ha:
+    uri: "sops:./ha.secrets.env"
+  other:
+    url: "azurekv://vaultname?mi=true"
+
+dns:
+  ha: cloudflare
+  default: hostfile
+
+envs:
+  ha: # assumes ./ha.env
+
+  default: # assumes "default" for env, vaults, but for server assumes localhost, 
+
+  other:
+    vars: 
+      OTHER: v 
+    imports:
+      - "./shared.env"
+      - "./other.env"
+
+contexts:
+  ha: # assumes env, vaults, and server use 'ha' as the name
+    ssh_config: "./ha.ssh_config"
+
+compose:
+  include:
+    - "src"
