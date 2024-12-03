@@ -1,8 +1,9 @@
 # file for giving 
-name: myapp
+id: "@org/globally-unique-id"
+version: 1.0.0
 
 # shared tasks
-tasks:
+jobs:
   before_deploy:
     - run: |
         echo "before deploy"
@@ -13,7 +14,9 @@ contexts:
     compose: ./ha.compose.yaml
 
     # restrict the envs to use
-    env: ["VAR", "VAR2"]
+    envs: 
+      include: [ha]
+      vars: [PG_PASSWORD]
 
     # only use the secrets
     secrets:
@@ -26,4 +29,10 @@ contexts:
 
     zone: |
       mayap 
+
+    jobs:
+      before_deploy:
+        - run: |
+            echo "before deploy"
+          shell:
       

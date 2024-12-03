@@ -1,17 +1,16 @@
 # .jolt9 in a directory will be treated as a cache and configuration directory.
 vaults:
-  ha:
-    uri: "sops:./ha.secrets.env"
+  ha: "sops:./ha.secrets.env"
+  shared: 
+    uri: "sops:./shared.secrets.env"
+    shared: true
+    with:
+      name: shared
   other:
     url: "azurekv://vaultname?mi=true"
 
-dns:
-  ha: cloudflare
-  default: hostfile
-
 envs:
   ha: # assumes ./ha.env
-
   default: # assumes "default" for env, vaults, but for server assumes localhost, 
 
   other:
@@ -21,10 +20,29 @@ envs:
       - "./shared.env"
       - "./other.env"
 
+traefik:
+  default:
+    acme:
+      email: ${{ secrets.ACME_EMAIL }}
+    static: 
+      entrypoints:
+        https:
+          address: ":443"
+        http:
+          address: ":80"
+        test:
+          - vars="test"
+
+
+dns:
+  cloudflare: "cloudflare:?CF_API_TOKEN=${CF_API_TOKEN}?ACME=true"
+  default: hostfile
+
 contexts:
   ha: # assumes env, vaults, and server use 'ha' as the name
     ssh_config: "./ha.ssh_config"
+    dns: cloudflare
 
-compose:
+projects:
   include:
     - "src"

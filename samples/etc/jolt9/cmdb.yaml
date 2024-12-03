@@ -1,0 +1,13 @@
+
+inventory:
+  - name: default 
+    host: localhost
+  
+  - name: node1
+    host: 10.0.0.10
+    facts:
+      os:
+        platform: linux
+        family: debian
+        id: ubuntu
+  

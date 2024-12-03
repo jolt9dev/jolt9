@@ -1,0 +1,10 @@
+{
+    "yaml.schemaStore.enable": true,
+
+    "yaml.schemas": {
+        "https://json.schemastore.org/traefik-v2.json": [ 
+            "traefik.yaml",
+            "/samples/.jolt9/traefik/default.yaml"
+        ]
+    }
+}

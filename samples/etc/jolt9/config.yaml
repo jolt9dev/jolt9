@@ -1,0 +1,12 @@
+vaults:
+  default: "sops:"
+
+envs:
+  default: "default.env"
+
+dns:
+  default: "hostfile"
+
+
+context: 
+  default: "default"
