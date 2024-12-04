@@ -2,12 +2,19 @@ package configs
 
 import (
 	"fmt"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
 
 type EnvsSection struct {
 	data map[string]EnvItem
+}
+
+type EnvItem struct {
+	Vars    map[string]string
+	Imports []string
+	Shared  bool
 }
 
 func (e *EnvsSection) Get(name string) (EnvItem, bool) {
@@ -52,11 +59,6 @@ func (e *EnvsSection) UnmarshalYAML(value *yaml.Node) error {
 	}
 
 	return nil
-}
-
-type EnvItem struct {
-	Vars    map[string]string
-	Imports []string
 }
 
 func (e *EnvItem) UnmarshalYAML(value *yaml.Node) error {
@@ -139,6 +141,12 @@ func (e *EnvItem) UnmarshalYAML(value *yaml.Node) error {
 
 				e.Imports = append(e.Imports, item.Value)
 			}
+		case "shared":
+			if val.Kind != yaml.ScalarNode {
+				return fmt.Errorf("expected a scalar node, got %v", val.Kind)
+			}
+
+			e.Shared = strings.EqualFold(val.Value, "true") || val.Value == "1"
 		default:
 			return fmt.Errorf("unexpected key %q", key.Value)
 		}

@@ -1,0 +1,15 @@
+id: "@org/globally-unique-id"
+version: 1.0.0
+
+
+app:
+  image: "traefik:v2.2"
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "${J9_DATA_DIR}/"
+  network:
+    jolt9_frontend:
+      ip: 
+  

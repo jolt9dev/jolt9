@@ -33,6 +33,8 @@ traefik:
         test:
           - vars="test"
 
+servers:
+  sshConfig: true
 
 dns:
   cloudflare: "cloudflare:?CF_API_TOKEN=${CF_API_TOKEN}?ACME=true"
@@ -40,7 +42,7 @@ dns:
 
 contexts:
   ha: # assumes env, vaults, and server use 'ha' as the name
-    ssh_config: "./ha.ssh_config"
+    sshConfig: "./ha.ssh_config"
     dns: cloudflare
 
 projects:
