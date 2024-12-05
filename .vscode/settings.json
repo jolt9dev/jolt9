@@ -6,5 +6,11 @@
             "traefik.yaml",
             "/samples/.jolt9/traefik/default.yaml"
         ]
+    },
+
+    "gopls": {
+        "ui.diagnostic.analyses": {
+            "unusedparams": false
+        }
     }
 }

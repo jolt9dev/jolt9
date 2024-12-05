@@ -10,13 +10,40 @@ jobs:
       shell:
 
 contexts:
+  default: 
+    app: 
+      proxy:
+        domain: "example.com"
+        port: 80
+      traefik:
+        ignore: true # handled by the compose file
+        middleware: 
+          - name: "redirect"
+            type: "redirect"
+            params: 
+              regex: "^https://(.*)"
+              replacement: "https://www.$${1}"
+              permanent: true
+      compose: 
+        extends: 
+          file: "./compose.yaml"
+          service: "traefik"
+
+
+
   ha:
-    compose: ./ha.compose.yaml
+    compose: 
+      service: 
+        traefik:
+          extends: 
+            file: "./compose.yaml"
+            service: "traefik"
+
+      
 
     # restrict the envs to use
     envs: 
-      include: [ha]
-      vars: [PG_PASSWORD]
+      use: "./ha.env"
 
     # only use the secrets
     secrets:
@@ -24,8 +51,12 @@ contexts:
         gen: true # generate if not exists
         # vault is not provided, it will assume the default vault
 
+
     traefik:
       exclude: true # probably already handled by the compose file
+      rules:
+        - host: "ha.example.com"
+          entrypoints: ["https"]
 
     zone: |
       mayap 

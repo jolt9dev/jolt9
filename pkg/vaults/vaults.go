@@ -27,16 +27,22 @@ type DeleteSecretParams struct {
 	OperationParams
 }
 
+type ListSecretNamesParams struct {
+	OperationParams
+}
+
 type SecretVault interface {
+	BatchGetSecretValues(keys []string, params *GetSecretValueParams) (map[string]string, error)
+
+	BatchSetSecretValues(values map[string]string, params *SetSecretValueParams) error
+
 	GetSecretValue(key string, params *GetSecretValueParams) (string, error)
 
-	BatchGetSecretValues(keys []string, params *GetSecretValueParams) (map[string]string, error)
+	ListSecretNames(params *ListSecretNamesParams) ([]string, error)
 
 	MapSecretValues(keys map[string]string, params *GetSecretValueParams) (map[string]string, error)
 
 	SetSecretValue(key, value string, params *SetSecretValueParams) error
-
-	BatchSetSecretValues(values map[string]string, params *SetSecretValueParams) error
 
 	DeleteSecret(key string, params *DeleteSecretParams) error
 }

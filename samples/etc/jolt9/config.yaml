@@ -1,11 +1,111 @@
 vaults:
-  default: "sops:"
+  default: "sops:./default.secrets.env"
 
 envs:
   default: "default.env"
 
+traefik:
+  default:
+    acme:
+      email: ${{ secrets.ACME_EMAIL }}
+      dns: "hostsfile"
+    static: 
+      log:
+        level: "DEBUG"
+
+      api:
+        dashboard: true
+        insecure: true
+
+      providers:
+        docker:
+          endpoint: "unix:///var/run/docker.sock"
+          exposedByDefault: false
+          network: "jolt9_frontend"
+          watch: 
+        file:
+          directory: "/etc/traefik/dynamic"
+          watch: true
+
+      entryPoints:
+        http:
+          address: ":80"
+        https:
+          address: ":443"
+          http:
+            tls:
+              options: "minVersion=VersionTLS12"
+              certResolver: "cloudflare"
+
+      certificatesResolvers:
+        cloudflare:
+          acme:
+            dnsChallenge:
+              provider: "cloudflare"
+              resolvers: ["1.1.1.1:53", "1.0.0.1:53"]
+              delayBeforeCheck: "20"
+            storage: "/etc/traefik/acme/cloudflare.json"
+        cloudflare_test:
+          acme:
+            dnsChallenge:
+              provider: "cloudflare"
+              resolvers: ["1.1.1.1:53", "1.0.0.1:53"]
+              delayBeforeCheck: "20"
+            caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+            storage: "/etc/traefik/acme/cloudflare_test.json"
+  template:
+    acme:
+      email: ${{ secrets.ACME_EMAIL }}
+      dns: "cloudflare"
+    static: 
+      log:
+        level: "DEBUG"
+
+      api:
+        dashboard: true
+        insecure: true
+
+      providers:
+        docker:
+          endpoint: "unix:///var/run/docker.sock"
+          exposedByDefault: false
+          network: "jolt9_frontend"
+          watch: true
+        file:
+          directory: "/etc/traefik/dynamic"
+          watch: true
+
+      entryPoints:
+        http:
+          address: ":80"
+        https:
+          address: ":443"
+          http:
+            tls:
+              options: "minVersion=VersionTLS12"
+              certResolver: "cloudflare"
+
+      certificatesResolvers:
+        cloudflare:
+          acme:
+            dnsChallenge:
+              provider: "cloudflare"
+              resolvers: ["1.1.1.1:53", "1.0.0.1:53"]
+              delayBeforeCheck: "20"
+            storage: "/etc/traefik/acme/cloudflare.json"
+        cloudflare_test:
+          acme:
+            dnsChallenge:
+              provider: "cloudflare"
+              resolvers: ["1.1.1.1:53", "1.0.0.1:53"]
+              delayBeforeCheck: "20"
+            caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+            storage: "/etc/traefik/acme/cloudflare_test.json"
+
 dns:
   default: "hostfile"
+  cloudflare: "cloudflare:?CF_API_TOKEN=${CF_API_TOKEN}"
+
 
 
 

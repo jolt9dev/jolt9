@@ -24,6 +24,19 @@ traefik:
   default:
     acme:
       email: ${{ secrets.ACME_EMAIL }}
+      dns: "hostsfile"
+    static: 
+      entrypoints:
+        https:
+          address: ":443"
+        http:
+          address: ":80"
+        test:
+          - vars="test"
+  shared:
+    acme:
+      email: ${{ secrets.ACME_EMAIL }}
+      dns: "cloudflare"
     static: 
       entrypoints:
         https:

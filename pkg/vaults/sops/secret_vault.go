@@ -107,6 +107,26 @@ func (s *SopsSecretVault) GetSecretValue(key string, params *vaults.GetSecretVal
 	}
 }
 
+func (s *SopsSecretVault) ListSecretNames(params *vaults.ListSecretNamesParams) ([]string, error) {
+	if !s.loaded {
+		err := s.Decrypt()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if s.fileType == "dotenv" {
+		keys := make([]string, 0, len(s.data))
+		for k := range s.data {
+			keys = append(keys, k)
+		}
+
+		return keys, nil
+	}
+
+	return nil, fmt.Errorf("unsupported file type: %s", s.fileType)
+}
+
 func (s *SopsSecretVault) BatchGetSecretValues(keys []string, params *vaults.GetSecretValueParams) (map[string]string, error) {
 	values := map[string]string{}
 	for _, key := range keys {
